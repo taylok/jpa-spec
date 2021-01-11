@@ -1,14 +1,28 @@
 package com.kmt.jpaspec.specification;
 
+import com.kmt.jpaspec.domain.Class;
 import com.kmt.jpaspec.domain.Member;
+import com.kmt.jpaspec.repository.ClassRepository;
 import com.kmt.jpaspec.web.model.FilterRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.SetJoin;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.springframework.data.jpa.domain.Specification.where;
 
 @Component
 public class MemberSpecification extends BaseSpecification<Member, FilterRequest> {
+
+    @Autowired
+    ClassRepository classRepository;
 
     @Override
     public Specification getFilter( FilterRequest request ) {
@@ -18,6 +32,35 @@ public class MemberSpecification extends BaseSpecification<Member, FilterRequest
             return where(isActive(request.getActive())
                     .and(inZipCode(request.getZipFilter())))
                     .toPredicate(root, query, cb);
+        };
+    }
+
+    public Specification<Member> hasString(String searchString) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            if (searchString != null) {
+                return cb.like(cb.lower(root.get("interests")), cb.lower(cb.literal("%" + searchString + "%")));
+            } else {
+                return null;
+            }
+        };
+    }
+
+    public Specification<Member> hasClasses(String searchString) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            if (searchString != null) {
+                List<Class> classes = classRepository.findAllByNameContainsIgnoreCase(searchString);
+
+                if (!CollectionUtils.isEmpty(classes)) {
+                    SetJoin<Member, Class> masterClassJoin = root.joinSet("classes", JoinType.LEFT);
+                    List<Predicate> predicates = new ArrayList<>();
+                    predicates.add(masterClassJoin.in(new HashSet<>(classes)));
+                    Predicate[] p = predicates.toArray(new Predicate[predicates.size()]);
+                    return cb.or(p);
+                }
+            }
+            return null;
         };
     }
 
@@ -40,5 +83,7 @@ public class MemberSpecification extends BaseSpecification<Member, FilterRequest
             }
         };
     }
+
+
 
 }

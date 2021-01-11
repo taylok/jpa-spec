@@ -26,7 +26,7 @@ public class MemberController {
     @GetMapping(value = "")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<Member>> getAllMembers(@RequestParam(required = false) String searchString, FilterRequest filter) {
-        return new ResponseEntity<>(memberService.getMembers(filter), HttpStatus.OK);
+        return new ResponseEntity<>(memberService.getMembers(filter, searchString), HttpStatus.OK);
     }
 
 }

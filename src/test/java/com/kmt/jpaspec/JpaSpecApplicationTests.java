@@ -12,6 +12,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
@@ -123,6 +124,29 @@ class JpaSpecApplicationTests {
         assertEquals(3, memberList.size());
     }
 
+    @Test
+    public void testMembersWithSwimClassOrInterest() {
+        String searchString = "sWIM";
+
+        List<Member> memberList = memberRepository.findAll(Specification.where(memberSpecification.hasString(searchString)
+                .or(memberSpecification.hasClasses(searchString))));
+
+        assertEquals(3, memberList.size());
+    }
+
+    @Test
+    public void testMembersActiveInZip902WithSwimClassOrInterest() {
+        FilterRequest filter = new FilterRequest();
+        filter.setActive(true);
+        filter.setZipFilter("902");
+        String searchString = "sWIM";
+
+        List<Member> memberList = memberRepository.findAll(Specification.where(memberSpecification.hasString(searchString)
+                .or(memberSpecification.hasClasses(searchString)))
+                .and(memberSpecification.getFilter(filter)));
+
+        assertEquals(2, memberList.size());
+    }
 
 
 }

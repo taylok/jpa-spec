@@ -12,17 +12,20 @@ import java.util.List;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
-    private MemberSpecification memberSpecification;
+    private final MemberRepository memberRepository;
+    private final MemberSpecification memberSpecification;
 
-    public MemberService( @Lazy MemberRepository memberRepository, @Lazy MemberSpecification memberSpecification) {
+    public MemberService( @Lazy MemberRepository memberRepository, @Lazy MemberSpecification memberSpecification ) {
         this.memberRepository = memberRepository;
         this.memberSpecification = memberSpecification;
     }
 
-    public List<Member> getMembers( FilterRequest filter ) {
-            return memberRepository.findAll(Specification.where(memberSpecification.getFilter(filter)));
+    public List<Member> getMembers( FilterRequest filter, String searchString ) {
+        return memberRepository.findAll(Specification.where(memberSpecification.hasString(searchString)
+                .or(memberSpecification.hasClasses(searchString)))
+                .and(memberSpecification.getFilter(filter)));
     }
+
 }
 
 
