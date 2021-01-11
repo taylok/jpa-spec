@@ -6,7 +6,8 @@ curl -X GET 'http://localhost:8080/members'
 ```
 curl -X GET 'http://localhost:8080/members?active=true&filter=123'
 ```
-0.2.0 SearchString JPA
+0.3.0 SearchString JPA
 ```
 curl -X GET 'http://localhost:8080/members?active=true&filter=123&searchString=tennis'
 ```
+0.4.0 Basic Quartz Config
