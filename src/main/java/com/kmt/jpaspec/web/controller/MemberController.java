@@ -2,6 +2,7 @@ package com.kmt.jpaspec.web.controller;
 
 import com.kmt.jpaspec.domain.Member;
 import com.kmt.jpaspec.service.MemberService;
+import com.kmt.jpaspec.web.model.FilterRequest;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,8 +25,8 @@ public class MemberController {
     @ResponseBody
     @GetMapping(value = "")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<Member>> getAllMembers() {
-        return new ResponseEntity<>(memberService.getMembers(), HttpStatus.OK);
+    public ResponseEntity<List<Member>> getAllMembers(@RequestParam(required = false) String searchString, FilterRequest filter) {
+        return new ResponseEntity<>(memberService.getMembers(filter), HttpStatus.OK);
     }
 
 }

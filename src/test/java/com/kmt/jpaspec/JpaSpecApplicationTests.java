@@ -4,6 +4,8 @@ import com.kmt.jpaspec.domain.Class;
 import com.kmt.jpaspec.domain.Member;
 import com.kmt.jpaspec.repository.ClassRepository;
 import com.kmt.jpaspec.repository.MemberRepository;
+import com.kmt.jpaspec.specification.MemberSpecification;
+import com.kmt.jpaspec.web.model.FilterRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -30,6 +32,9 @@ class JpaSpecApplicationTests {
 
     @Autowired
     private ClassRepository classRepository;
+
+    @Autowired
+    private MemberSpecification memberSpecification;
 
     @BeforeAll
     public void init() {
@@ -100,9 +105,24 @@ class JpaSpecApplicationTests {
 
     @Test
     public void testMembersActive() {
-        List<Member> memberList = memberRepository.findAll();
+        FilterRequest filter = new FilterRequest();
+        filter.setActive(true);
+
+        List<Member> memberList = memberRepository.findAll(memberSpecification.getFilter(filter));
+
+        assertEquals(2, memberList.size());
+    }
+
+    @Test
+    public void testMembersInZip902() {
+        FilterRequest filter = new FilterRequest();
+        filter.setZipFilter("902");
+
+        List<Member> memberList = memberRepository.findAll(memberSpecification.getFilter(filter));
+
         assertEquals(3, memberList.size());
     }
+
 
 
 }
