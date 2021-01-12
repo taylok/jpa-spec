@@ -11,6 +11,7 @@ curl -X GET 'http://localhost:8080/members?active=true&filter=123'
 curl -X GET 'http://localhost:8080/members?active=true&filter=123&searchString=tennis'
 ```
 0.4.0 Basic Quartz Config
+
 0.5.0 Quartz API
 ```
 curl -X GET 'http://localhost:9000/scheduler/information'
