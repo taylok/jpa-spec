@@ -4,6 +4,10 @@ import com.kmt.jpaspec.service.SchedulerService;
 import com.kmt.jpaspec.web.model.QuartzInformation;
 import com.kmt.jpaspec.web.model.QuartzJobDetail;
 import com.kmt.jpaspec.web.model.QuartzResponse;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 import org.springframework.http.HttpStatus;
@@ -14,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static javax.servlet.http.HttpServletResponse.*;
+
+@Api(tags = "Scheduler API")
 @Controller
 @CrossOrigin
 @RequestMapping(value = "/scheduler/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -24,6 +31,8 @@ public class SchedulerController {
         this.schedulerService = schedulerService;
     }
 
+    @ApiOperation(value = "Retrieves general information about the Quartz scheduler")
+    @ApiResponses(value = { @ApiResponse(code = SC_OK, message = "ok"), @ApiResponse(code = SC_BAD_REQUEST, message = "An unexpected error occurred") })
     @GetMapping(value = "information")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
@@ -35,6 +44,8 @@ public class SchedulerController {
         }
     }
 
+    @ApiOperation(value = "Retrieves job key information from the Quartz scheduler")
+    @ApiResponses(value = { @ApiResponse(code = SC_OK, message = "ok"), @ApiResponse(code = SC_BAD_REQUEST, message = "An unexpected error occurred") })
     @GetMapping(value = "jobKeys")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
@@ -46,6 +57,8 @@ public class SchedulerController {
         }
     }
 
+    @ApiOperation(value = "For a given name and group, returns job details from the Quartz scheduler")
+    @ApiResponses(value = { @ApiResponse(code = SC_OK, message = "ok"), @ApiResponse(code = SC_BAD_REQUEST, message = "An unexpected error occurred") })
     @GetMapping(value = "jobDetail")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
@@ -57,6 +70,8 @@ public class SchedulerController {
         }
     }
 
+    @ApiOperation(value = "For a given name and group, deletes the job/trigger(s) from the Quartz scheduler")
+    @ApiResponses(value = { @ApiResponse(code = SC_ACCEPTED, message = "accepted"), @ApiResponse(code = SC_BAD_REQUEST, message = "An unexpected error occurred") })
     @DeleteMapping(value = "deleteJob")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<QuartzResponse> deleteJob( @RequestParam String name, @RequestParam String group) {

@@ -23,3 +23,4 @@ curl -X DELETE 'http://localhost:9000/scheduler/deleteJob?name=Member+Statistics
 ```
 http://localhost:9000/swagger-ui.htm
 ```
+0.7.0 Swagger Documentation
