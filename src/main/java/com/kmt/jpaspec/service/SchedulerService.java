@@ -130,5 +130,4 @@ public class SchedulerService {
         return quartzResponse;
     }
 
-
 }
